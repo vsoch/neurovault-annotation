@@ -1,129 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    
-    
-    <script src="http://www.neurovault.org/static/scripts/jquery-1.10.2.min.js" type="text/javascript"></script>
-    <script src="http://www.neurovault.org/static/scripts/jquery-ui.min.js" type="text/javascript"></script>
-    <script src="http://www.neurovault.org/static/scripts/jquery.cookie.js" type="text/javascript"></script>
-    <script src="http://www.neurovault.org/static/scripts/bootstrap.min.js" type="text/javascript"></script>
-    <script src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js" type="text/javascript"></script>
-    <script src="//cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.js" type="text/javascript"></script>
-    <link rel="stylesheet" href="http://www.neurovault.org/static/css/dataTables.bootstrap.css"/>
-    <script src="http://www.neurovault.org/static/scripts/paging.js" type="text/javascript"></script>
-    <script src="http://www.neurovault.org/static/scripts/base.js" type="text/javascript"></script>
-    <link rel="stylesheet" href="http://www.neurovault.org/static/css/bootstrap.css" />
-    <link href="http://www.neurovault.org/static/css/jquery-ui.css" media="screen" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="http://www.neurovault.org/static/css/datatables.css" />
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="http://www.neurovault.org/static/css/style.css" />
-    
-    
-<title>NeuroVault: a new home for all brain statistical maps!</title>
-	
-</head>
-
-
-<body>
-
-<div class="container navigation-container">
-
-<nav class="navbar navbar-default" id="navigation">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-links">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="/">NeuroVault (beta) </a>
-    </div>
-
-    <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="collapse navbar-collapse" id="main-links">
-      <ul class="nav navbar-nav">
-	  <li class="dropdown">
-	  <a href="" class="dropdown-toggle" data-toggle="dropdown">
-	      Collections
-	      <b class="caret"></b>
-	  </a>
-	  <ul class="dropdown-menu">
-	      <li><a href="http://www.neurovault.org/my_collections/">My collections</a></li>
-	      <li><a href="http://www.neurovault.org/collections/new">Add new collection</a></li>
-	      <li><a href="http://www.neurovault.org/collections/">See all collections</a></li>
-	  </ul>
-	  </li>
-	 <li><a href="http://www.neurovault.org/FAQ">NeuroVault</a></li>
-	 <li><a href="/FAQ">FAQ</a></li>
-      </ul>
-      <ul class="nav navbar-nav navbar-right">
-          
-	  <li class="dropdown">
-	  <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-	      annotator
-	  </a>
-	  </li>
-	  
-      </ul>
-    </div><!-- /.navbar-collapse -->
-  </div><!-- /.container -->
-</nav>
-
-    <div class="container" id="main">
-        <div class="row" id="content">
-                
-<div class='row'>
-    <div class="col-md-11">
-        <h2>Annotation Portal</h2>        
-            <div class="lead">Krzysztof J Gorgolewski, Amos Storkey, Mark E Bastin, Ian R Whittle, Joanna M Wardlaw and Cyril R Pernet</div>
-        
-            <div class="lead">
-                <a href="http://www.gigasciencejournal.com/content/2/1/6">Link to the paper</a>
-            </div>
-    </div>
-</div>
-<div class="row">
+<h2>Annotation Portal</h2>        
+<div class="lead">
+    <p>This is a demo for a NeuroVault annotation portal. For more information, see the <a href="/faq">FAQ</a></p>
+</div>      
 
 <!-- Each paper will have a tab-->
-{% for collection in collections %}
 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-  <div class="panel panel-default">
-    <div class="panel-heading" role="tab" id="headingOne">
-      <h4 class="panel-title">
-        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#{{ collection.collection_id }}" aria-expanded="true" aria-controls="{{ collection.collection_id }}">
+{% for collection in collections %}
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingOne">
+            <h4 class="panel-title">
+                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#{{ collection.collection_id }}" aria-expanded="true" aria-controls="{{ collection.collection_id }}">
           {{ collection.name }}
-        </a>
-      </h4>
+                </a>
+            </h4>
+        </div>
+        <div id="{{ collection.collection_id }}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+            <div class="panel-body">
+                <div class="col-md-4">
+                <h3>Missing Annotations</h3>
+                {% for key, value in collection.iteritems() %}
+                    {% if value == "None" or value == "nan" %}
+                       <dd>{{ key }}</dd>
+                    {% endif %}
+                {% endfor %}
+                </div>
+                <div class="col-md-4">
+                    <h3>Authors</h3>
+                    <dd>{{ collection.authors }}</dd>
+                    <h3>Journal</h3>
+                    <dd>{{ collection.journal }}</dd>
+                </div>
+                <div class="col-md-4">
+                   <a href="{{ collection.url }}" target="_blank">
+                      <button class="btn btn-default" type="button">Annotate</button>
+                   </a>
+                </div>
+             </div>
+        </div>
     </div>
-    <div id="{{ collection.collection_id }}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
-      <div class="panel-body">
-        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-      </div>
-    </div>
-  </div>
 {% endfor %}
 </div>
-
-</div>
-<div class='row'>
-    <div class='span11'>
-        <hr />
-    </div>
-</div>
-        </div>
-   </div>
-
-<footer style="text-align:center;padding-top:10px">
-      <div class="container navigation-container">
-        <p class="text-muted"> 
-            <a href="http://www.neurovault.org/api-docs">API</a>  &middot;
-            <a href="https://github.com/NeuroVault/NeuroVault">Github </a> &middot;
-            <a href="http://www.cognitiveatlas.org">Cognitive Atlas </a> &middot; 
-            <a href="http://www.neurosynth.org">NeuroSynth </a></p>
-      </div>
-</footer>
-
-</body>
-
-</html>
+{% endblock %}

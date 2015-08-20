@@ -4,6 +4,10 @@ import pandas
 
 app = Flask(__name__)
 
+@app.route("/faq")
+def faq():
+    return render_template("faq.html")
+
 @app.route("/")
 def annotate_nv():
 
@@ -12,11 +16,33 @@ def annotate_nv():
     collections = pandas.read_pickle(pkl)
     collections = collections[collections["DOI"].isnull()==False]
     
+    # Remove more proprietary stuffs
+    collections =  collections.drop(["owner","add_date","contributors"],axis=1)
+
+    # We don't need to annotate these
+    not_annotations = ["url","collection_id","DOI"]
+    total_annotations = len(collections.columns) - len(not_annotations)
+
+    # Convert (most) columns to strings
+    for col in collections.columns:
+        try:
+            collections[col] =  collections[col].astype(str)
+        except:
+            pass
+
+    # Fill in nan with None
+    collections[collections.isnull()] = None
+
     # Convert each collection into a dict
     lists = []
     for row in collections.iterrows():
         lists.append(row[1].to_dict())
 
+    # Tags we don't need to render
+    # DOI, 
+
+    # How many tags total?
+    number_annotations = len(collections.columns) - 1
     # Generate a color for each task
     #tasks = images["cognitive_paradigm_cogatlas"].unique()
     #num_contrasts = len(tasks)
