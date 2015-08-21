@@ -2,18 +2,35 @@
 {% block content %}
 
 <h2>Annotation Portal</h2>        
-<div class="lead">
-    <p>This is a demo for a NeuroVault annotation portal. For more information, see the <a href="/faq">FAQ</a></p>
-</div>      
-
+<div class="row">
+    <div class="col-md-10">
+        <div class="lead">
+        <p>This is a demo for a NeuroVault annotation portal. For more information, see the <a href="/faq">FAQ</a></p>
+        </div>      
+    </div>
+    <div class="col-md-2">
+       <button class="btn btn-small btn-success">Defined</button>
+       <button class="btn btn-small btn-danger">Missing</button>
+    </div>
+</div>
 <!-- Each paper will have a tab-->
 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 {% for collection in collections %}
     <div class="panel panel-default">
-        <div class="panel-heading" role="tab" id="headingOne">
+        <div class="panel-heading" role="tab" id="headingOne" style="height:50px">
             <h4 class="panel-title">
                 <a role="button" data-toggle="collapse" data-parent="#accordion" href="#{{ collection.collection_id }}" aria-expanded="true" aria-controls="{{ collection.collection_id }}">
-          {{ collection.name }}
+                    <div class="row">
+                        <div class="col-md-10">
+                            {{ collection.name }}
+                        </div>
+                        <div class="col-md-2">
+                            <div class="float-right-wrapper">
+                                <button class="btn btn-small btn-success">{{ collection.defined_annotations }}</button>
+                                <button class="btn btn-small btn-danger">{{ collection.missing_annotations }}</button>
+                            </div>
+                        </div>
+                    </div>
                 </a>
             </h4>
         </div>
@@ -31,12 +48,14 @@
                     <h3>Authors</h3>
                     <dd>{{ collection.authors }}</dd>
                     <h3>Journal</h3>
-                    <dd>{{ collection.journal }}</dd>
+                    <dd>{{ collection.journal_name }}</dd>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4" style="margin-top:20px">
+                   <div class="float-right-wrapper">
                    <a href="{{ collection.url }}" target="_blank">
-                      <button class="btn btn-default" type="button">Annotate</button>
+                                <button class="btn btn-default btn-lg" type="button">Annotate</button>
                    </a>
+                   </div>
                 </div>
              </div>
         </div>

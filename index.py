@@ -22,6 +22,8 @@ def annotate_nv():
     # We don't need to annotate these
     not_annotations = ["url","collection_id","DOI"]
     total_annotations = len(collections.columns) - len(not_annotations)
+    collections["missing_annotations"] = total_annotations - collections.count(axis=1)
+    collections["defined_annotations"] = collections.count(axis=1)
 
     # Convert (most) columns to strings
     for col in collections.columns:
@@ -37,9 +39,6 @@ def annotate_nv():
     lists = []
     for row in collections.iterrows():
         lists.append(row[1].to_dict())
-
-    # Tags we don't need to render
-    # DOI, 
 
     # How many tags total?
     number_annotations = len(collections.columns) - 1
