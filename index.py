@@ -40,16 +40,6 @@ def get_collections():
     collections =  collections.drop(["owner","add_date","contributors"],axis=1)
     return collections
 
-# Update all annotations
-#@app.route("/update")
-#def update():
-#    collections = get_collections()
-    # Get annotations for the pk
-#    urls = collections["url"].tolist()
-#    annots = get_annotations(urls,collections.columns)
-#    return main_page(collections,annotations=annots)
-
-
 @app.route("/annotate/<pk>")
 def annotate(pk):
     collections = get_collections()
