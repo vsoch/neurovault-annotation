@@ -6,7 +6,15 @@
     <div class="col-md-10">
         <div class="lead">
         <p>This is a demo for a NeuroVault annotation portal. For more information, see the <a href="/faq">FAQ</a></p>
-        </div>      
+        </div>     
+        {% if annotations %}
+        <div class="well">
+            {% for key, value in annotations.iteritems() %}
+                   <dt>{{ key }}</dt>
+                   <dd>{{ value }}</dd>
+            {% endfor %}
+        </div>        
+        {% endif %} 
     </div>
     <div class="col-md-2">
        <button class="btn btn-small btn-success">Defined</button>
