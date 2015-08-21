@@ -7,23 +7,28 @@ import pandas
 
 app = Flask(__name__)
 
-def get_annotations(url,column_names):
-    url = "https://hypothes.is/api/search?uri=%s" %(url)
-    print url
-    text = requests.get(url).text.decode('utf-8')
-    rows = json.loads(text)['rows']
-    raw = [HypothesisRawAnnotation(row) for row in rows]
-    print raw
-    # We will take the first tag!
-    annots = dict()
-    # Very simple - will only allow for one annotation per tag
-    # Also assumes one tag per annotation
-    # We can obviously improve upon this!
-    for r in raw:
-        if r.tags[0] in column_names:
-            annots[r.tags[0]] = r.text
-    print annots
-    return annots    
+def get_annotations(urls,column_names):
+    if not isinstance(urls,list): urls = [urls]
+    annotations = dict()
+    for u in urls:
+        url = requests.get(u).url
+        url = "https://hypothes.is/api/search?uri=%s" %(url)
+        text = requests.get(url).text.decode('utf-8')
+        rows = json.loads(text)['rows']
+        raw = [HypothesisRawAnnotation(row) for row in rows]        
+        annots = dict()
+        # Very simple - will only allow for one annotation per tag
+        # Also assumes one tag per annotation
+        # We can obviously improve upon this!
+        for r in raw:
+            try: # A user may have done an annotation without a tag
+                if r.tags[0] in column_names:
+                    annots[r.tags[0]] = r.text
+            except:
+                pass
+        if len(annots) > 0:
+            annotations[u] = annots
+    return annotations    
 
 def get_collections():
     # Retrieve neurovault images, sort
@@ -35,12 +40,24 @@ def get_collections():
     collections =  collections.drop(["owner","add_date","contributors"],axis=1)
     return collections
 
+# Update all annotations
+#@app.route("/update")
+#def update():
+#    collections = get_collections()
+    # Get annotations for the pk
+#    urls = collections["url"].tolist()
+#    annots = get_annotations(urls,collections.columns)
+#    return main_page(collections,annotations=annots)
+
+
 @app.route("/annotate/<pk>")
 def annotate(pk):
     collections = get_collections()
     # Get annotations for the pk
     url = collections["url"][collections["collection_id"]==int(pk)].tolist()[0]
     annots = get_annotations(url,collections.columns)
+    if len(annots) == 0:
+        annots[url] = {"No annotations found!":""}    
     return main_page(collections,annotations=annots)
 
 @app.route("/faq")

@@ -8,17 +8,40 @@
         <p>This is a demo for a NeuroVault annotation portal. For more information, see the <a href="/faq">FAQ</a></p>
         </div>     
         {% if annotations %}
-        <div class="well">
-            {% for key, value in annotations.iteritems() %}
-                   <dt>{{ key }}</dt>
-                   <dd>{{ value }}</dd>
-            {% endfor %}
-        </div>        
+
+        <!-- Annotation Modal -->
+        <div id='annotation_modal' class='modal' data-backdrop='static' style='margin-top: 175px;'>
+            <div class='modal-dialog'>
+                <div class='modal-content'>
+                    <div class='modal-header'>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="hideModal()">&times;</button>
+                        <h4 class="modal-title">Annotations</h4>
+                    </div>
+                    <div class='modal-body'>
+                        <div class="well">
+                        {% for url, annots in annotations.iteritems() %}
+                            {% for annot_name, annot_value in annots.iteritems() %}
+                                <dt>{{ annot_name }}</dt>
+                                <dd>{{ annot_value }}</dd>
+                            {% endfor %}
+                        {% endfor %}
+                        </div>        
+                    </div>
+                </div>
+            </div>
+        </div><!-- close modal -->
+
+        <script>
+        $(document).ready(function() {
+            showModal();
+        });
+        </script>
+
         {% endif %} 
     </div>
     <div class="col-md-2">
-       <button class="btn btn-small btn-success">Defined</button>
-       <button class="btn btn-small btn-danger">Missing</button>
+       <button class="btn btn-small btn-success" style="opacity:1.0" disabled>Defined</button>
+       <button class="btn btn-small btn-danger" style="opacity:1.0" disabled>Missing</button>
     </div>
 </div>
 <!-- Each paper will have a tab-->
@@ -34,8 +57,8 @@
                         </div>
                         <div class="col-md-2">
                             <div class="float-right-wrapper">
-                                <button class="btn btn-small btn-success">{{ collection.defined_annotations }}</button>
-                                <button class="btn btn-small btn-danger">{{ collection.missing_annotations }}</button>
+                                <button class="btn btn-small btn-success" style="opacity:1.0" disabled>{{ collection.defined_annotations }}</button>
+                                <button class="btn btn-small btn-danger" style="opacity:1.0" disabled>{{ collection.missing_annotations }}</button>
                             </div>
                         </div>
                     </div>
@@ -61,7 +84,10 @@
                 <div class="col-md-4" style="margin-top:20px">
                    <div class="float-right-wrapper">
                    <a href="{{ collection.url }}" target="_blank">
-                                <button class="btn btn-default btn-lg" type="button">Annotate</button>
+                        <button class="btn btn-default btn-lg" type="button">Annotate</button>
+                   </a><br>
+                   <a href="/annotate/{{ collection.collection_id }}">
+                        <button class="btn btn-default btn-lg" type="button">View Annotations</button>
                    </a>
                    </div>
                 </div>
@@ -70,4 +96,14 @@
     </div>
 {% endfor %}
 </div>
+<script>
+function showModal(upload_type) {
+    document.getElementById('annotation_modal').style.display = 'block';
+    document.getElementById('fade').style.display = 'block';
+}
+function hideModal() {
+    document.getElementById('annotation_modal').style.display = 'none';
+    document.getElementById('fade').style.display = 'none';
+}
+</script>
 {% endblock %}
