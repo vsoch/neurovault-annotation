@@ -1,0 +1,265 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>{{ fields.collection.name }}</h2>        
+<div class="row">
+    <div class="col-md-10">
+        <div class="lead">
+        <p>{{ fields.collection.authors }}</p>
+        </div>     
+
+        {% if annotations %}
+            <div class="row">
+		    <div class="col-md-2">
+		        <h3>Annotations</h3>
+		    </div>
+		    <div class="col-md-2 float-right-wrapper" style="padding-left:57px;margin-top:20px">
+		       <button class="btn btn-small btn-success" title="not all metadata shown" style="opacity:1.0" disabled>{{ fields.collection.present }}</button>
+		       <button class="btn btn-small btn-danger" style="opacity:1.0" disabled>{{ fields.collection.missing }}</button>
+		    </div>
+            </div>
+            <div class="well">
+                {% for url, annots in annotations.iteritems() %}
+                    {% for annot in annots %}
+                        {% for annot_name, annot_value in annot.tags.0.iteritems() %}
+                            {% if annot.image_id != None %} 
+                            <dt>{{ annot_name}}[{{ annot.image_id.0 }}]</dt>
+                            {% else %}
+                            <dt>{{ annot_name }}</dt>
+                            {% endif %}
+                            <dd>{{ annot_value }}</dd>
+                        {% endfor %}                        
+                    {% endfor %}
+                {% endfor %}
+            </div>        
+        </div>
+ 
+        {% endif %} 
+        <div class="col-md-2" style="margin-top:95px">
+            <div class="float-right-wrapper">
+                <a href="{{ fields.collection.url }}" target="_blank">
+                        <button class="btn btn-default btn-lg" type="button">Annotate</button>
+                </a>
+           </div>
+        </div>
+        </div>
+            
+<!-- Each image will have a tab -->
+<h2>Images</h2>
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+{% for image in fields.images %}
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingOne" style="height:50px">
+            <h4 class="panel-title">
+                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#{{ image.id }}" aria-expanded="true" aria-controls="{{ image.id }}">
+                    <div class="row">
+                        <div class="col-md-10">
+                            {{ image.name }}
+                        </div>
+                        <div class="col-md-2">
+                            <div class="float-right-wrapper">
+                                <button class="btn btn-small btn-primary" style="opacity:1.0" disabled>{{ image.map_type }}</button>
+                                <button class="btn btn-small btn-default" style="opacity:1.0" disabled>{{ image.id }}</button>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </h4>
+        </div>
+        <div id="{{ image.id }}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+            <div class="panel-body">
+                <div class="col-md-4">
+                <h3>Meta Data</h3>
+                         
+                       <div class="row" style="margin-top:10px">
+                           <div class="col-md-5">
+                               <dt>Modality</dt>
+                           </div>
+                           {% if image.modality != None and image.modality != "" %}
+                           <div class="col-md-7 well" style="height:30px;padding:4px;width:150px">
+                           {% else %}
+                           <div class="col-md-7 well" style="height:30px;padding:4px;width:170px;background-color:#F19B9B">
+                           {% endif %}
+                               modality
+                           </div>
+                       </div>
+                       <dd>{{ image.modality }}</dd>
+                       <hr>
+
+                       <div class="row" style="margin-top:10px">
+                           <div class="col-md-5">
+                               <dt>Figure</dt>
+                           </div>
+                           {% if image.figure != None and image.figure != "" %}
+                           <div class="col-md-7 well" style="height:30px;padding:4px;width:150px">
+                           {% else %}
+                           <div class="col-md-7 well" style="height:30px;padding:4px;width:170px;background-color:#F19B9B">
+                           {% endif %}
+                               figure
+                           </div>
+                       </div>
+                       <dd>{{ image.figure }}</dd>
+                       <hr>
+
+                       <div class="row" style="margin-top:10px">
+                           <div class="col-md-5">
+                               <dt>Smoothing</dt>
+                           </div>
+                           {% if image.smoothness_fwhm != None and image.smoothness_fwhm != "" %}
+                           <div class="col-md-7 well" style="height:30px;padding:4px;width:150px">
+                           {% else %}
+                           <div class="col-md-7 well" style="height:30px;padding:4px;width:170px;background-color:#F19B9B">
+                           {% endif %}
+
+                               smoothness_fwhm
+                           </div>
+                       </div>
+                       <dd>{{ image.smoothness_fwhm }}</dd>
+
+                </div>
+                <div class="col-md-6">
+                    <a href="{{ image.url }}" target="_blank"><img src="{{ image.thumbnail }}"/></a>
+                       <div class="row" style="margin-top:20px">
+                           <div class="col-md-2">
+                               <dt>Task</dt>
+                           </div>
+
+                           {% if image.cognitive_paradigm_cogatlas != None and image.cognitive_paradigm_cogatlas != "" %}
+                           <div class="col-md-10 well" style="height:30px;padding:4px;width:200px">
+                           {% else %}
+                           <div class="col-md-10 well" style="height:30px;padding:4px;width:200px;background-color:#F19B9B">
+                           {% endif %}
+                               cognitive_paradigm_cogatlas
+                           </div>
+                       </div>
+                       <dd>{{ image.cognitive_paradigm_cogatlas }}</dd>
+                       <hr>
+                       <div class="row">
+                           <div class="col-md-2">
+                               <dt>Contrast</dt>
+                           </div>
+                           {% if image.contrast_definition != None and image.contrast_definition != "" %}
+                           <div class="col-md-10 well" style="height:30px;padding:4px;width:200px">
+                           {% else %}
+                           <div class="col-md-10 well" style="height:30px;padding:4px;width:200px;background-color:#F19B9B">
+                           {% endif %}
+
+                              contrast_definition
+                           </div>
+                       </div>
+                       <dd>{{ image.contrast_definition }}</dd>                 
+                </div>
+                <div class="col-md-2" style="margin-top:20px">
+                   <div class="float-right-wrapper">
+                   <a href="{{ fields.collection.url }}" target="_blank">
+                        <button class="btn btn-default btn-lg" type="button">Annotate</button>
+                   </a>
+                   </div>
+                </div>
+             </div>
+        </div>
+    </div>
+{% endfor %}
+
+<!-- Collection meta data -->
+<h2>Collection</h2>
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingTwo" style="height:50px">
+            <h4 class="panel-title">
+                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collection" aria-expanded="true" aria-controls="collection">
+                    <div class="row">
+                        <div class="col-md-10">
+                            {{ fields.collection.name }}
+                        </div>
+                    </div>
+                </a>
+            </h4>
+        </div>
+        <div id="collection" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+            <div class="panel-body">
+                <div class="col-md-10">
+                         
+                       <div class="row" style="margin-top:10px">
+                           <div class="col-md-5">
+                               <dt>Number of subjects</dt>
+                           </div>
+                           {% if fields.collection.number_of_subjects != None %}
+                           <div class="col-md-7 well" style="height:30px;padding:4px;width:170px">
+                           {% else %}
+                           <div class="col-md-7 well" style="height:30px;padding:4px;width:170px;background-color:#F19B9B">
+                           {% endif %}
+                               number_of_subjects
+                           </div>
+                       </div>
+                       <dd>{{ fields.collection.number_of_subjects }}</dd>
+                       <hr>
+
+                       <div class="row" style="margin-top:10px">
+                           <div class="col-md-5">
+                               <dt>Motion Correction</dt>
+                           </div>
+                           {% if fields.collection.used_motion_correction != None and fields.collection.used_motion_correction != "" %}
+                           <div class="col-md-7 well" style="height:30px;padding:4px;width:170px">
+                           {% else %}
+                           <div class="col-md-7 well" style="height:30px;padding:4px;width:170px;background-color:#F19B9B">
+                           {% endif %}
+                               used_motion_correction
+                           </div>
+                       </div>
+                       <dd>{{ fields.collection.used_motion_correction }}</dd>
+                       <hr>
+
+                       <div class="row" style="margin-top:10px">
+                           <div class="col-md-5">
+                               <dt>Software</dt>
+                           </div>
+                           {% if fields.collection.software_package != None and fields.collection.software_package != ""  %}
+                           <div class="col-md-7 well" style="height:30px;padding:4px;width:170px">
+                           {% else %}
+                           <div class="col-md-7 well" style="height:30px;padding:4px;width:170px;background-color:#F19B9B">
+                           {% endif %}
+                               software_package
+                           </div>
+                       </div>
+                       <dd>{{ fields.collection.software_package }}</dd>
+
+                       <hr>
+                       <div class="row" style="margin-top:10px">
+                           <div class="col-md-5">
+                               <dt>Coordinate Space</dt>
+                           </div>
+                           {% if fields.collection.coordinate_space != None and fields.collection.coordinate_space != "" %}
+                           <div class="col-md-7 well" style="height:30px;padding:4px;width:170px">
+                           {% else %}
+                           <div class="col-md-7 well" style="height:30px;padding:4px;width:170px;background-color:#F19B9B">
+                           {% endif %}
+
+                                 coordinate_space
+                           </div>
+                       </div>
+                       <dd>{{ fields.collection.coordinate_space }}</dd>
+                </div>
+                <div class="col-md-2" style="margin-top:20px">
+                   <div class="float-right-wrapper">
+                   <a href="{{ fields.collection.url }}" target="_blank">
+                        <button class="btn btn-default btn-lg" type="button">Annotate</button>
+                   </a>
+                   </div>
+                </div>
+              </div><!--end collection-->
+
+
+
+</div>
+<script>
+function showModal(upload_type) {
+    document.getElementById('annotation_modal').style.display = 'block';
+    document.getElementById('fade').style.display = 'block';
+}
+function hideModal() {
+    document.getElementById('annotation_modal').style.display = 'none';
+    document.getElementById('fade').style.display = 'none';
+}
+</script>
+{% endblock %}

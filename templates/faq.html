@@ -12,21 +12,26 @@
             <div class="lead">        
                 <h3>Where does the data come from?</h3>
             </div>
-                <p>The collections data comes by way of a pandas dataframe, which is retrieved directly from the <a href="https://github.com/NeuroVault/pyneurovault/blob/master/examples/dois_example.py" target="_blank">NeuroVault API</a>. The data is loaded from a pickle file to maximize performance, so collections, DOIs, and updated meta-data added after 8/20/2015 will not be represented. Integration into NeuroVault itself will mean that the collections will come by way of Django queries directly to the database, allowing for real-time stuffs.</p>
+                <p>The collections data comes by way of a pandas dataframe, which is retrieved directly from the <a href="https://github.com/NeuroVault/pyneurovault/blob/master/examples/dois_example.py" target="_blank">NeuroVault API</a>. The collection metadata is loaded from a pickle file to maximize performance, however the images metadata is retrieved in real time.</p>
 
             <div class="lead">        
                 <h3>What should I do?</h3>
             </div>
-                <p>Each tab <a href="/">here</a> represents a collection, and you will see that there is a counter for the number of annotations missing (red) and provided (green). By clicking on a collection name, the interface will render the fields that are missing annotations. The job of the annotator is to follow the link of the collection paper, and annotate missing data with <a href="http://www.hypothes.is" target="_blank">hypothes.is</a> (see link to sign up and learn how to use it).</p>
-
+                <p>You first need to sign up for a <a href="http://www.hypothes.is" target="_blank">hypothes.is</a> account, download the browser plugin, and activate it.</p>
+                <p>The <a href="/">main portal</a> will allow you to choose a collection to annotate. You can use the "Quick View" to see if there are annotations missing. Under the collections view, you can view annotations (metadata) for the individual images, or the entire collection. Red highlight indicates that the annotation is missing. For example, here we have a missing value:</p>
+                <img src="{{ url_for('static',filename='img/beforeannot.png') }}" style="padding:20px"/>
+                <p>We can then follow the "Annotate" button to go to the page, and make an annotation. To annotate a collection field, you should make a single annotation that has the value for the annotation in the top text box, and the tag for it in the "tags" box. To annotate an image, you must add the image id, which is shown in the top right of the box above, also as a tag. For example, here is how I would annotate "smoothness_fwhm" for image id 111:</p>
+                <img src="{{ url_for('static',filename='img/annotation.png') }}" style="padding:20px"/>
+                <p>Once you do the annotation, if you refresh the collection page, you will see the value filled in. If you annotate a value that already exists, it will not be overwritten.</p>
+                <img src="{{ url_for('static',filename='img/afterannot.png') }}" style="padding:20px"/>
 
             <div class="lead">        
-                <h3>How should I annotate?</h3>
+                <h3>How are we improving this workflow?</h3>
             </div>
-                <p>We want to do our annotations based on a standard terminology, and so we are going to use the meta-data fields that are provided in NeuroVault as our annotation "tags." When Hypothes.is is streamlined for this kind of use, we will be able to provide them with a list like this one, however for now the tags are open response, and it is your job to write in the correct field name for your annotation.</p>
+                <p>We want to do our annotations based on a standard terminology, both for contrasts from the Cognitive Atlas, and images from NeuroVault. We (Hypothes.is and Poldracklab) are working on an annotation interface that is aware of both images in a collection, and tasks/contrasts in the Cognitive Atlas. For now the tags are open response, and it is your job to write in the correct field name for your annotation. An incorrect tag or annotation will not show up in the interface.</p>
 
             <div class="lead">        
-                <h3>Then what happens?</h3>
+                <h3>Where do the annotations live?</h3>
             </div>
                 <p>When the main page is rendered, it programatically retrieves a json that has annotations for all of the collections. In the case that an annotation has been made, it will fill in the value of the data frame, and the interface will be updated that the annotation is no longer needed. In some "actual" implementation, we would have these annotations getting added to the appropriate fields in the NeuroVault database. For now they live in the Hypothes.is database.</p>
 
